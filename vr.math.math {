@@ -1,0 +1,29 @@
+modulo vr.math {
+
+    // Funciones matemáticas básicas
+    func distancia(a: Vec3, b: Vec3) -> f32 {
+        return (b - a).magnitude()
+    }
+
+    func angulo_entre(a: Vec3, b: Vec3) -> f32 {
+        return a.angle_to(b)
+    }
+
+    func normalizar(vector: Vec3) -> Vec3 {
+        return vector / vector.magnitude()
+    }
+
+    // Funciones geométricas
+    func crear_matriz_transformacion(posicion: Vec3, rotacion: Quat, escala: Vec3) -> Mat4 {
+        return Mat4::create_translation(posicion) * Mat4::create_rotation(rotacion) * Mat4::create_scale(escala)
+    }
+
+    func proyectar_punto(punto: Vec3, matriz_proyeccion: Mat4) -> Vec3 {
+        return matriz_proyeccion * punto
+    }
+
+    // Funciones de ayuda
+    func clamp(valor: f32, minimo: f32, maximo: f32) -> f32 {
+        return min(max(valor, minimo), maximo)
+    }
+}

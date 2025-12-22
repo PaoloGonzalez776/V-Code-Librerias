@@ -1,0 +1,51 @@
+modulo vr.input {
+
+    // Tipos públicos
+    estructura Boton {
+        id: u16,
+        estado: bool
+    }
+
+    estructura Haptic {
+        id: u16,
+        intensidad: f32,
+        duracion: milisegundos
+    }
+
+    // Estado interno
+    estado_interno {
+        botones: HashMap<u16, Boton>,
+        haptics: HashMap<u16, Haptic>
+    }
+
+    // Inicialización
+    func iniciar() {
+        // Inicializar el sistema de input
+        kernel_VisorOS.init_input_system()
+    }
+
+    // Funciones de input
+    func obtener_estado_boton(id: u16) -> bool {
+        return estado_interno.botones.get(id).estado
+    }
+
+    func vibrar(mano: Mano, intensidad: f32, duracion: milisegundos) {
+        let id = mano.id
+        let haptic = Haptic { id, intensidad, duracion }
+        estado_interno.haptics.insert(id, haptic)
+        kernel_VisorOS.trigger_haptic(id, intensidad, duracion)
+    }
+
+    // Eventos de input
+    evento boton_presionado(id: u16) {
+        let boton = Boton { id, estado: true }
+        estado_interno.botones.insert(id, boton)
+        disparar_evento_usuario("boton_presionado", id)
+    }
+
+    evento boton_soltado(id: u16) {
+        let boton = Boton { id, estado: false }
+        estado_interno.botones.insert(id, boton)
+        disparar_evento_usuario("boton_soltado", id)
+    }
+}

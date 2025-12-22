@@ -1,0 +1,33 @@
+// Archivo: vr/tracking/manos.vr
+modulo vr.tracking.manos {
+
+    // Tipos ya usados en sintaxis
+    estructura Mano {
+        pose: Transform,
+        dedos: [Articulacion; 5],
+        confianza: f32
+    }
+
+    // API sin alloc
+    func obtener_izquierda() -> Mano
+        dentro 50microsegundos
+        sin_alloc {
+
+        return buffer_izq.latest()
+    }
+
+    func obtener_derecha() -> Mano
+        dentro 50microsegundos
+        sin_alloc {
+
+        return buffer_der.latest()
+    }
+
+    // Gestos simples
+    func gesto_pellizco(m: Mano) -> bool
+        dentro 20microsegundos {
+
+        return m.dedos[0].angulo < 0.35rad
+               && m.dedos[1].angulo < 0.35rad
+    }
+}
